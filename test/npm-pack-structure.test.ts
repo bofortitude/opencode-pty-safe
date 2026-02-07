@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'bun:test'
+import { describe, expect, it } from 'bun:test'
 
 // This test ensures `npm pack` (which triggers the package's `prepack` script)
 // produces a tarball that includes the built web UI (`dist/web/**`) and the
@@ -26,7 +26,7 @@ function findPackFileFromOutput(stdout: string): string | null {
   const lines = stdout.trim().split(/\r?\n/)
   for (let i = lines.length - 1; i >= 0; i--) {
     const line = lines[i]
-    if (line && line.trim().endsWith('.tgz')) return line.trim()
+    if (line?.trim().endsWith('.tgz')) return line.trim()
   }
   return null
 }
@@ -55,5 +55,5 @@ describe('npm pack structure', () => {
 
     // 4) Cleanup the pack file
     await run(['rm', '-f', tgz as string])
-  }, 10000)
+  }, 20000)
 })

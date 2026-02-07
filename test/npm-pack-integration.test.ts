@@ -1,7 +1,7 @@
-import { describe, it, expect, afterEach } from 'bun:test'
-import { mkdtempSync, rmSync, copyFileSync, existsSync, mkdirSync } from 'fs'
-import { join } from 'path'
-import { tmpdir } from 'os'
+import { afterEach, describe, expect, it } from 'bun:test'
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 
 // This test ensures the npm package can be packed, installed, and serves assets correctly
 
@@ -23,7 +23,7 @@ function findPackFileFromOutput(stdout: string): string {
   const lines = stdout.trim().split(/\r?\n/)
   for (let i = lines.length - 1; i >= 0; i--) {
     const line = lines[i]
-    if (line && line.trim().endsWith('.tgz')) return line.trim()
+    if (line?.trim().endsWith('.tgz')) return line.trim()
   }
   throw new Error('No .tgz file found in npm pack output')
 }
@@ -74,7 +74,7 @@ describe('npm pack integration', () => {
     const files = list.stdout.split(/\r?\n/).filter(Boolean)
     const jsAsset = files.find((f) => /package\/dist\/web\/assets\/[^/]+\.js$/.test(f))
     expect(jsAsset).toBeDefined()
-    const assetName = jsAsset!.replace('package/dist/web/assets/', '')
+    const assetName = jsAsset?.replace('package/dist/web/assets/', '')
 
     // 3) Install in temp workspace
     const install = await run(['bun', 'install', tgzPath], { cwd: tempDir })
@@ -114,7 +114,9 @@ describe('npm pack integration', () => {
           await new Promise(setImmediate)
         }
         const bytes = await Bun.file(portFile).bytes()
-        const port = parseInt(new TextDecoder().decode(bytes).trim(), 10)
+        const portStr = new TextDecoder().decode(bytes).trim()
+        const port = parseInt(portStr, 10)
+        if (Number.isNaN(port)) return 0
         return port
       }
 
