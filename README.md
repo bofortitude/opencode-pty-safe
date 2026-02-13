@@ -1,4 +1,6 @@
-# opencode-pty
+# opencode-pty-safe
+
+This is a safe version of opencod-pty for critical scenario.
 
 A plugin for [OpenCode](https://opencode.ai) that provides interactive PTY (pseudo-terminal) management, enabling the AI agent to run background processes, send interactive input, and read output on demand.
 
